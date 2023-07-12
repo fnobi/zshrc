@@ -1,14 +1,21 @@
-# git diff-highlight
-export PATH=$PATH:/usr/local/share/git-core/contrib/diff-highlight/
+typeset -U path PATH
+path=(
+  /opt/homebrew/bin(N-/)
+  /opt/homebrew/sbin(N-/)
+  /usr/bin
+  /usr/sbin
+  /bin
+  /sbin
+  /usr/local/bin(N-/)
+  /usr/local/sbin(N-/)
+  /Library/Apple/usr/bin
+)
 
 # use anyenv
 eval "$(anyenv init -)"
 
 # npm completion
-source ~/.npm-completion
-
-# include home bin
-export PATH="$PATH:$HOME/bin/"
+source <(npm completion)
 
 # include scripts
 for file in $( ls ~/bash.conf/script/*.sh ); do
