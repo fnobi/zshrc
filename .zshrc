@@ -24,6 +24,9 @@ fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 autoload -U compinit
 compinit -u
 
+# ruby-build configure
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+
 # include scripts
 for file in $( ls $zsh_project_path/script/*.sh ); do
     source $file
