@@ -11,6 +11,7 @@ path=(
   /usr/local/bin(N-/)
   /usr/local/sbin(N-/)
   /Library/Apple/usr/bin
+  ~/bin(N-/)
 )
 
 # use anyenv
