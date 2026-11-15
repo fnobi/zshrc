@@ -29,3 +29,6 @@ compinit -u
 for file in $( ls $zsh_project_path/script/*.sh ); do
     source $file
 done
+
+# 現在の gcloud ADC / gh アカウントを表示
+[[ -o interactive ]] && show_accounts
