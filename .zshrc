@@ -1,6 +1,13 @@
-zsh_project_path="$(dirname $(readlink $0))"
+zsh_project_path="${${(%):-%x}:A:h}"
 
+# ============================================================
+# PATH
+#   ここに集約する。(N-/) で存在しないディレクトリは無視される
+#   typeset -U で重複は自動的に除去される
+# ============================================================
 typeset -U path PATH
+
+# システム / Homebrew
 path=(
   /opt/homebrew/bin(N-/)
   /opt/homebrew/sbin(N-/)
@@ -11,24 +18,46 @@ path=(
   /usr/local/bin(N-/)
   /usr/local/sbin(N-/)
   /Library/Apple/usr/bin
-  ~/bin(N-/)
+  $HOME/bin(N-/)
 )
 
-# use anyenv
+# anyenv（各 env の shims を先頭に追加する）
 eval "$(anyenv init -)"
 
-# npm completion
-source <(npm completion)
+# 各種ツール（anyenv の shims より優先させる）
+export PNPM_HOME="$HOME/Library/pnpm"
+path=(
+  $HOME/.local/bin(N-/)
+  $HOME/.unity/bin(N-/)
+  $PNPM_HOME/bin(N-/)
+  $HOME/google-cloud-sdk/bin(N-/)
+  $path
+)
 
-# use completion
+# ============================================================
+# 補完
+# ============================================================
 fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 autoload -U compinit
 compinit -u
 
-# include scripts
-for file in $( ls $zsh_project_path/script/*.sh ); do
-    source $file
+# npm
+source <(npm completion)
+
+# gcloud
+[[ -f $HOME/google-cloud-sdk/completion.zsh.inc ]] && source $HOME/google-cloud-sdk/completion.zsh.inc
+
+# ============================================================
+# 自作スクリプト
+# ============================================================
+for file in $zsh_project_path/script/*.sh(N); do
+  source $file
 done
 
+# ============================================================
+# 起動時表示
+# ============================================================
 # 現在の gcloud ADC / gh アカウントを表示
 [[ -o interactive ]] && show_accounts
+
+# ---- 以下インストーラーによる自動追記。気づいたら上のブロックに移す ----
