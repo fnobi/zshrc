@@ -55,6 +55,18 @@ for file in $zsh_project_path/script/*.sh(N); do
 done
 
 # ============================================================
+# shellごとにCLOUDSDK_CONFIGをリセット
+# ============================================================
+
+if [[ -z $CLOUDSDK_CONFIG_OWNER ]]; then
+  export CLOUDSDK_CONFIG=$(mktemp -d "${TMPDIR:-/tmp}/gcloud.XXXXXX")
+  export CLOUDSDK_CONFIG_OWNER=$$
+fi
+zshexit() {
+  [[ $CLOUDSDK_CONFIG_OWNER == $$ ]] && rm -rf "$CLOUDSDK_CONFIG"
+}
+
+# ============================================================
 # 起動時表示
 # ============================================================
 # 現在の gcloud ADC / gh アカウントを表示
